@@ -52,7 +52,7 @@ extern int ik_mouse_b;
 extern int ik_mouse_c;
 extern int must_quit;
 extern int wants_screenshot;
-
+extern bool combat_check;
 extern int key_left;
 extern int key_right;
 extern int key_up;
@@ -61,4 +61,3 @@ extern int key_f[10];
 extern int key_fire1;
 extern int key_fire2;
 extern int key_fire2b;
-

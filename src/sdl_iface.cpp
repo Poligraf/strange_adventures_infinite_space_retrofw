@@ -101,14 +101,14 @@ int ik_mouse_c;
 int must_quit;
 int wants_screenshot;
 
-int key_left=SDLK_LEFT;
-int key_right=SDLK_RIGHT;
-int key_up=SDLK_UP;
-int key_down=SDLK_DOWN;
+// int key_left=SDLK_LEFT;
+// int key_right=SDLK_RIGHT;
+// int key_up=SDLK_UP;
+// int key_down=SDLK_DOWN;
 int key_f[10];
-int key_fire1=SDLK_TAB;
-int key_fire2=SDLK_RETURN;
-int key_fire2b=SDLK_SPACE;
+// int key_fire1=SDLK_TAB;
+// int key_fire2=SDLK_RETURN;
+// int key_fire2b=SDLK_SPACE;
 char ik_inchar;
 uint8 *keystate;
 
@@ -124,10 +124,7 @@ void eventhandler()
 	keystate = SDL_GetKeyState(NULL);
 	if ((keystate[BUTTON_DOWN] || keystate[BUTTON_UP] ||
 	keystate[BUTTON_LEFT] || keystate[BUTTON_RIGHT]) &&
-	keystate[BUTTON_SELECT]==false &&
-	keystate[BUTTON_Y]==false &&
-	keystate[BUTTON_B]==false &&
-	keystate[BUTTON_A]==false){
+	combat_check==0){
 		av_mouse_cur_x += 8 * (keystate[BUTTON_RIGHT] - keystate[BUTTON_LEFT]);
 		av_mouse_cur_y += 8 * (keystate[BUTTON_DOWN]  - keystate[BUTTON_UP]);
 
@@ -142,8 +139,41 @@ void eventhandler()
 
 
 
-		SDL_WarpMouse(ik_mouse_x, ik_mouse_y);
+		SDL_WarpMouse(av_mouse_cur_x, av_mouse_cur_y);
 	}
+
+
+
+	if ((keystate[BUTTON_DOWN] || keystate[BUTTON_UP] ||
+	keystate[BUTTON_LEFT] || keystate[BUTTON_RIGHT]) &&
+	combat_check==1){
+		av_mouse_cur_x += 3 * (keystate[BUTTON_RIGHT] - keystate[BUTTON_LEFT]);
+		av_mouse_cur_y += 3 * (keystate[BUTTON_DOWN]  - keystate[BUTTON_UP]);
+
+		if (av_mouse_cur_x < 0) av_mouse_cur_x = 0;
+		if (av_mouse_cur_x > 640) av_mouse_cur_x = 640;
+		if (av_mouse_cur_y < 0) av_mouse_cur_y = 0;
+		if (av_mouse_cur_y > 480) av_mouse_cur_y = 480;
+
+
+		ik_mouse_x =av_mouse_cur_x ;
+		ik_mouse_y = av_mouse_cur_y ;
+
+
+		SDL_WarpMouse(av_mouse_cur_x, av_mouse_cur_y);
+	}
+
+
+	if ((keystate[SDLK_BACKSPACE])){
+	ik_mouse_c = 1;
+	ik_mouse_b = 1;
+	}
+
+
+	if ((keystate[SDLK_BACKSPACE]==false)){
+	ik_mouse_b &= (7-1);
+	}
+
 
 	while ( SDL_PollEvent(&event) )
 	{
@@ -162,10 +192,10 @@ void eventhandler()
 					Play_SoundFX(WAV_LOCK,0);
 					break;
 
-				case SDLK_BACKSPACE :
-				ik_mouse_c = 1;
-				ik_mouse_b = 1;
-				break;
+				// case SDLK_BACKSPACE :
+				// ik_mouse_c = 1;
+				// ik_mouse_b = 1;
+				// break;
 				case SDLK_ESCAPE :
 					must_quit=1;
 					break;
@@ -174,12 +204,7 @@ void eventhandler()
 			}
 
 
-			// switch(event.key.keysym.sym){
-			// case SDL_KEYUP:
-			// 		case SDLK_LSHIFT :
-			// 		ik_mouse_c = 0;
-			// 		ik_mouse_b |= 0;
-			// }
+
 			ik_inchar = event.key.keysym.unicode & 0xff;
 			break;
 
@@ -199,6 +224,7 @@ void eventhandler()
 						2*(event.button.button == SDL_BUTTON_RIGHT) +
 						4*(event.button.button == SDL_BUTTON_MIDDLE);
 				ik_mouse_b &= (7-b);
+
 				break;
 
 			case SDL_ACTIVEEVENT:
